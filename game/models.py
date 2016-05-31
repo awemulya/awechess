@@ -6,6 +6,9 @@ from django.db import models
 class Player(models.Model):
     name = models.CharField(max_length=256)
 
+    def __str__(self):
+        return '%s' % (self.name)
+
 
 class GameData(models.Model):
     event = models.CharField(max_length=256)
@@ -20,9 +23,16 @@ class GameData(models.Model):
     eco = models.CharField(max_length=10)
     event_date = models.DateField()
 
+    def __str__(self):
+        return '%s -vs %s ' % (self.white.name, self.black.name)
 
-class Moves(models.Model):
+
+
+class Move(models.Model):
     game = models.ForeignKey(GameData, related_name='moves')
     move_no = models.IntegerField()
-    white = models.CharField(max_length=10)
-    black = models.CharField(max_length=10)
+    move = models.CharField(max_length=10)
+
+    def __str__(self):
+        return '%s' % (self.move)
+

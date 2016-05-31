@@ -1,6 +1,5 @@
 import os
-import argparse
-
+from extractor import extractor
 from django.core.management import BaseCommand, CommandError
 
 
@@ -12,6 +11,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         dir_name = options['dirname']
+        files = []
         if dir_name == None :
             raise CommandError("Option `--dirname=...` must be specified.")
 
@@ -24,5 +24,14 @@ class Command(BaseCommand):
             for pgnfile in os.listdir(dir_name):
                 if not pgnfile.endswith('.pgn'):
                     raise CommandError("Not a pgn file :" + pgnfile)
+                else:
+                    files.append(os.path.join(dir_name,pgnfile))
+        ext = extractor.Extractor(files)
+        ext.run()
+
+        self.stdout.write("Command executed successfully")
+
+
+
 
 
