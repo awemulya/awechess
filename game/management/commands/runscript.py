@@ -1,5 +1,5 @@
 import os
-from optparse import make_option
+import argparse
 
 from django.core.management import BaseCommand, CommandError
 
@@ -7,11 +7,8 @@ from django.core.management import BaseCommand, CommandError
 class Command(BaseCommand):
     help = "Command to import chess games from file to database"
 
-    option_list = BaseCommand.option_list + (
-        make_option(
-            "--dirname",
-        ),
-    )
+    def add_arguments(self, parser):
+        parser.add_argument('--dirname', type=str)
 
     def handle(self, *args, **options):
         dir_name = options['dirname']
@@ -24,4 +21,8 @@ class Command(BaseCommand):
         elif not os.listdir(dir_name):
             raise CommandError("No files found in given Directory :" + dir_name)
         else:
-            print os.listdir(dir_name)
+            for pgnfile in os.listdir(dir_name):
+                if not pgnfile.endswith('.pgn'):
+                    raise CommandError("Not a pgn file :" + pgnfile)
+
+
