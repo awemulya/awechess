@@ -15,7 +15,6 @@ class Command(BaseCommand):
         if dir_name == None :
             raise CommandError("Option `--dirname=...` must be specified.")
 
-        # make sure file path resolves
         if not os.path.isdir(dir_name) :
             raise CommandError("Directory does not exist at the specified path.")
         elif not os.listdir(dir_name):

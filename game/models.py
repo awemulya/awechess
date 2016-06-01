@@ -3,6 +3,11 @@ from __future__ import unicode_literals
 from django.db import models
 
 
+class FileHistory(models.Model):
+    checksum = models.CharField(max_length=256)
+    date = models.DateTimeField(auto_now=True)
+
+
 class Player(models.Model):
     name = models.CharField(max_length=256)
 

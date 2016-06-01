@@ -1,6 +1,8 @@
 import re
 
-from game.models import GameData, Player, Move
+import hashlib
+
+from game.models import GameData, Player, Move, FileHistory
 from datetime import datetime
 
 
@@ -40,6 +42,19 @@ def save_moves(game, moves_list):
         move.save()
 
 
+def md5(file_name):
+    hash_md5 = hashlib.md5()
+    with open(file_name, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_md5.update(chunk)
+    return hash_md5.hexdigest()
+
+
+def file_repeated(pgn_file):
+    checksum = md5(pgn_file)
+    return True if FileHistory.objects.filter(checksum=checksum) else False
+
+
 class Extractor(object):
     if isinstance(object, basestring):
         raise TypeError(" Not a List of files")
@@ -56,20 +71,22 @@ class Extractor(object):
 
     def run(self):
         is_game_desc = True
-        test_file = self.files[0]
-        with open(test_file) as data_file:
-            game_list = []
-            moves_list = []
-            for line in data_file:
-                if line in ['\n', '\r\n']:
-                    if game_list and moves_list and not is_game_desc:
-                        self.save_game(game_list, moves_list)
-                        game_list , moves_list = [] , []
-                    is_game_desc = self.alter(is_game_desc)
-                else:
-                    if is_game_desc:
-                        game_list.append(line)
-                    else:
-                        moves_list.append(line)
+        for pgn_file in self.files:
+            if not file_repeated(pgn_file):
+                with open(pgn_file) as data_file:
+                    game_list = []
+                    moves_list = []
+                    for line in data_file:
+                        if line in ['\n', '\r\n']:
+                            if game_list and moves_list and not is_game_desc:
+                                self.save_game(game_list, moves_list)
+                                game_list , moves_list = [] , []
+                            is_game_desc = self.alter(is_game_desc)
+                        else:
+                            if is_game_desc:
+                                game_list.append(line)
+                            else:
+                                moves_list.append(line)
+                FileHistory.objects.create(checksum=md5(pgn_file))
 
 
