@@ -1,3 +1,8 @@
 from django.shortcuts import render
 
-# Create your views here.
+
+def index(request):
+    context = {
+        'msg': "hello",
+    }
+    return render(request, 'game/index.html', context)
