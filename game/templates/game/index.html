@@ -1,10 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+<body>
+<p> search game by moves</p>
+<form action="{% url 'game:search_by_moves' %}" method="POST">
+
+{{form.as_p}}
+    {% csrf_token %}
+
+    <input type="submit" value="Search"/>
+
+</form>
+
+</body>
 <head>
     <meta charset="UTF-8">
-    <title>Hellos</title>
+    <title>search games</title>
 </head>
-<body>
-{{msg}}
-</body>
 </html>

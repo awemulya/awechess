@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>searched games</title>
+</head>
+<body>
+{{moves}}
+{% if games %}
+total {{count}} games found
+{% for game in games %}
+white : {{game.white}}
+black : {{game.black}}
+result: {{game.result}}
+{% endfor %}
+{% else %}
+No games found
+{% endif %}
+</body>
+</html>
