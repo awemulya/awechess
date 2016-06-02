@@ -11,18 +11,34 @@ def make_game(game_list):
     game = GameData()
     game.event = game_list[0][8:-3]
     game.site = game_list[1][7:-3]
-    game.date = datetime.strptime(game_list[2][7:-3], '%Y.%m.%d').date()
-    game.round = game_list[3][8:-3]
+    try:
+        game.date = datetime.strptime(game_list[2][7:-3], '%Y.%m.%d').date()
+    except:
+        pass
+    try:
+        game_round = float(game_list[3][8:-3])
+    except:
+        game_round = float(game_list[3][8:-4])
+    game.round = game_round
     white, created = Player.objects.get_or_create(name=game_list[4][8:-3])
     game.white = white
     black, created = Player.objects.get_or_create(name=game_list[5][8:-3])
 
     game.black = black
     game.result = game_list[6][9:-3]
-    game.white_elo = game_list[7][11:-3]
-    game.black_elo = game_list[8][11:-3]
-    game.event_date = datetime.strptime(game_list[10][12:-3], '%Y.%m.%d').date()
+    try:
+        game.white_elo = int(game_list[7][11:-3])
+    except:
+        game.white_elo = int(game_list[7][11:-4])
+    try:
+        game.black_elo = int(game_list[8][11:-3])
+    except:
+        game.black_elo = int(game_list[8][11:-4])
     game.eco = game_list[9][6:-3]
+    try:
+        game.event_date = datetime.strptime(game_list[10][12:-3], '%Y.%m.%d').date()
+    except:
+        pass
     game.save()
     return game
 
